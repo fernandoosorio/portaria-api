@@ -1,5 +1,6 @@
 package com.portaria.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +19,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
+import org.springframework.web.multipart.MultipartFile;
 import com.portaria.model.ParametrosPesquisa;
 import com.portaria.model.pessoa.DetalhamentoPessoaDto;
+import com.portaria.model.pessoa.FileStorageService;
+import com.portaria.model.pessoa.Pessoa;
 import com.portaria.model.pessoa.PessoaAtualizaraDto;
 import com.portaria.model.pessoa.PessoaCadastrarDto;
-import com.portaria.model.pessoa.Pessoa;
 import com.portaria.repository.PessoaRepository;
 
 import lombok.var;
@@ -38,6 +40,9 @@ public class PessoaController{
 
     @Autowired
     private PessoaRepository  repository;
+    @Autowired
+    private FileStorageService fileStorageService;
+    
     
     @GetMapping
     public ResponseEntity <List<Pessoa> > listarTodos(){
@@ -58,32 +63,62 @@ public class PessoaController{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<DetalhamentoPessoaDto> salvar(@RequestBody @Validated PessoaCadastrarDto laudoDto, UriComponentsBuilder uriBuilder){
-    	var laudo = new Pessoa(laudoDto);
+    public ResponseEntity< DetalhamentoPessoaDto > salvar(@RequestPart(name="pessoa", required=false) PessoaCadastrarDto dto
+    					,@RequestPart(name="foto", required=false) MultipartFile file
+    					){
     	
-    	repository.save(laudo);
-    	var uri = uriBuilder.path("/eticket-api/laudos/{id}").buildAndExpand(laudo.getId()).toUri();
-        return  ResponseEntity.created(uri).body(new DetalhamentoPessoaDto(laudo) );
+    	
+    	var entidade = new Pessoa(dto);
+    	
+    	if(file != null)  {
+    		String enderecoFoto = fileStorageService.storeFile(file);
+    		entidade.setCaminhoFoto(enderecoFoto);
+    	}
+    		
+		repository.save(entidade);
+    	
+		return  ResponseEntity.ok()
+				.body(new DetalhamentoPessoaDto(entidade)); 
+    }
+    
+    @GetMapping("/foto/{pessoaid}")
+    @ResponseBody
+    public ResponseEntity<?>  buscaFotoByPath(@PathVariable Long pessoaid ) throws IOException{
+    	
+    	var pessoa = repository.findById(pessoaid).get();
+    	if(pessoa.getCaminhoFoto() == null) {
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registro sem foto cadastrada");
+    	}
+    
+    	byte[] image = fileStorageService.downloadImageFromFileSystem( pessoa.getCaminhoFoto()   );
+    	
+    	
+    	
+    	return ResponseEntity.status(HttpStatus.OK)
+				.body(image);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Transactional
     public ResponseEntity<DetalhamentoPessoaDto> atualizar(@RequestBody @Validated PessoaAtualizaraDto atualizarDto){
-    	var laudo = repository.getReferenceById(atualizarDto.getId());
-    	laudo.atualizarDados(atualizarDto);
+    	var entidade = repository.getReferenceById(atualizarDto.getId());
+    	entidade.atualizarDados(atualizarDto);
     	
-        return  ResponseEntity.ok(new DetalhamentoPessoaDto(laudo)); 
+        return  ResponseEntity.ok()
+        						.body(new DetalhamentoPessoaDto(entidade)); 
     }
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<DetalhamentoPessoaDto>  buscaPorId(@PathVariable("id") Long laudoId ){
+    public ResponseEntity<DetalhamentoPessoaDto>  buscaPorId(@PathVariable("id") Long id ){
     	
-    	var laudo = repository.getReferenceById( laudoId);
+    	var entidade = repository.getReferenceById( id);
     	
-    	return  ResponseEntity.ok(new DetalhamentoPessoaDto(laudo)); 
+    	return  ResponseEntity.ok(new DetalhamentoPessoaDto(entidade)); 
     }
+    
+   
 
     @PostMapping("/buscarPorParametrosPaginado")
     public ResponseEntity< Page<Pessoa>> buscarComParametros(@RequestBody ParametrosPesquisa parametrosPesquisa){
@@ -92,8 +127,7 @@ public class PessoaController{
         orders.add( new Order(Sort.Direction.ASC, "id") );
 
         PageRequest pageRequest = PageRequest.of(parametrosPesquisa.getPagina(),
-        parametrosPesquisa.getTamanho(),
-        Sort.by(orders));
+        parametrosPesquisa.getTamanho(), Sort.by(orders) );
         
         Page<Pessoa>  retorno = repository.findByParametros		(
         		parametrosPesquisa.getNome(), 
@@ -104,5 +138,6 @@ public class PessoaController{
        
         return ResponseEntity.ok(retorno);
     }
+    
 
 }

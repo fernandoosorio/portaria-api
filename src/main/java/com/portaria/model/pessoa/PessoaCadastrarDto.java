@@ -1,7 +1,5 @@
 package com.portaria.model.pessoa;
 
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -14,6 +12,8 @@ public class PessoaCadastrarDto {
     private String telefoneCelular;
     private boolean ativo = true;
     private Long idUsuarioCadastrador;
+    private String caminhoFoto;
+    private String telefoneFixo;
 
     
 }

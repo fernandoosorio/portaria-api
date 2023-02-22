@@ -12,14 +12,17 @@ public class DetalhamentoPessoaDto {
 	private LocalDateTime dataCriacao;	   
     private String nomeCadastrador;
     private boolean ativo;
+    private String caminhoFoto;
 	
 	
-	public DetalhamentoPessoaDto(Pessoa pessoa) {
-		this.id = pessoa.getId();
-		this.nome = pessoa.getNome();
-		this.cpf = pessoa.getCpf();
-		this.dataCriacao = pessoa.getDataCriacao();
-		this.ativo = pessoa.isAtivo();
+	public DetalhamentoPessoaDto(Pessoa entidade) {
+		this.id = entidade.getId();
+		this.nome = entidade.getNome();
+		this.cpf = entidade.getCpf();
+		this.dataCriacao = entidade.getDataCriacao();
+		this.ativo = entidade.isAtivo();
+		this.caminhoFoto = entidade.getCaminhoFoto();
+		
 		//this.nomeCadastrador = pessoa.getUsuarioCadastrador().getNome();
 	}
 

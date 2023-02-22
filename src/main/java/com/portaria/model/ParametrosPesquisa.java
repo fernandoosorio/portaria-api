@@ -18,6 +18,10 @@ public class ParametrosPesquisa {
     private int tamanho;
 
     private String ativoString;
+    
+    private String caminho;
+    
+    private String cpf;
 
  
     public LocalDateTime getDataToTime() {
