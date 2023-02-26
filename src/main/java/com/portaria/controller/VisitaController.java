@@ -53,7 +53,7 @@ public class VisitaController{
     public ResponseEntity<Page<DetalhamentoVisitaDto>> listarPaginada(@RequestBody ParametrosPesquisa parametrosPesquisa){
         PageRequest pageRequest = PageRequest.of(parametrosPesquisa.getPagina(),
         parametrosPesquisa.getTamanho(),
-        Sort.Direction.ASC, "id");
+        Sort.Direction.DESC, "id");
         var pagina = repository.buscarPaginado(pageRequest)
         		.map(DetalhamentoVisitaDto::new );
 
@@ -77,10 +77,10 @@ public class VisitaController{
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Transactional
     public ResponseEntity<DetalhamentoVisitaDto> atualizar(@RequestBody @Validated VisitaAtualizaraDto atualizarDto){
-    	var laudo = repository.getReferenceById(atualizarDto.getId());
-    	laudo.atualizarDados(atualizarDto);
+    	var entidade = repository.getReferenceById(atualizarDto.getId());
+    	entidade.atualizarDados(atualizarDto);
     	
-        return  ResponseEntity.ok(new DetalhamentoVisitaDto(laudo)); 
+        return  ResponseEntity.ok(new DetalhamentoVisitaDto(entidade)); 
     }
 
     @GetMapping("/{id}")
@@ -95,8 +95,7 @@ public class VisitaController{
     @PostMapping("/buscarPorParametrosPaginado")
     public ResponseEntity< Page<Visita>> buscarComParametros(@RequestBody ParametrosPesquisa parametrosPesquisa){
         List<Order> orders = new ArrayList<Order>();
-        orders.add( new Order(Sort.Direction.DESC, "ativo") );
-        orders.add( new Order(Sort.Direction.ASC, "id") );
+        orders.add( new Order(Sort.Direction.DESC, "id") );     
 
         PageRequest pageRequest = PageRequest.of(parametrosPesquisa.getPagina(),
         parametrosPesquisa.getTamanho(),

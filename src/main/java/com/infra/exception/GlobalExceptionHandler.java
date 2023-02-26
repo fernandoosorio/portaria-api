@@ -51,7 +51,7 @@ public class GlobalExceptionHandler{
     public ResponseEntity<ExceptionDto> BadRequestException(BadCredentialsException e){
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-        		.body( new ExceptionDto(HttpStatus.FORBIDDEN, e.getMessage())
+        		.body( new ExceptionDto(HttpStatus.FORBIDDEN,  "Usuário ou senha incorretos!")
         );
     }
     
@@ -62,6 +62,16 @@ public class GlobalExceptionHandler{
         		.body( new ExceptionDto(HttpStatus.FORBIDDEN, "Usuário ou senha incorretos!")
         );
     }
+    
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionDto> RuntimeException(RuntimeException e){
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        		.body( new ExceptionDto(HttpStatus.FORBIDDEN, e.getMessage())
+        );
+    }
+    
+    
 	
     
 	

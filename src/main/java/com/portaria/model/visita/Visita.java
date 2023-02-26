@@ -90,6 +90,15 @@ public class Visita  implements Serializable{
 		if(!ObjectUtils.isEmpty(dto.getIdUsuarioModificador())) {
 			this.idUsuarioUltimaAtualizacao = dto.getIdUsuarioModificador() ;
 		}
+		if(dto.isRegistrandoSaida() ) {
+			if(dto.getHorarioSaidaRegistrar() != null ) {
+	    		this.dataSaida = LocalDateTime.parse(dto.getHorarioSaidaRegistrar(), 
+	        			DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+	    	}else {
+	    		this.dataSaida = LocalDateTime.now();
+	    	}
+		}
+		
 		
 		this.dataUltimaAtualizacao = LocalDateTime.now();
 

@@ -13,15 +13,19 @@ public class DetalhamentoPessoaDto {
     private String nomeCadastrador;
     private boolean ativo;
     private String caminhoFoto;
+    private String telefoneCelular;
+    private String telefoneFixo;
 	
 	
 	public DetalhamentoPessoaDto(Pessoa entidade) {
-		this.id = entidade.getId();
-		this.nome = entidade.getNome();
-		this.cpf = entidade.getCpf();
-		this.dataCriacao = entidade.getDataCriacao();
-		this.ativo = entidade.isAtivo();
-		this.caminhoFoto = entidade.getCaminhoFoto();
+		setId( entidade.getId() );
+		setNome( entidade.getNome() );
+		setCpf( entidade.getCpf() );
+		setDataCriacao( entidade.getDataCriacao() );
+		setAtivo ( entidade.isAtivo() );
+		setCaminhoFoto (entidade.getCaminhoFoto());
+		setTelefoneCelular (entidade.getTelefoneCelular());
+		setTelefoneFixo ( entidade.getTelefoneFixo() );
 		
 		//this.nomeCadastrador = pessoa.getUsuarioCadastrador().getNome();
 	}

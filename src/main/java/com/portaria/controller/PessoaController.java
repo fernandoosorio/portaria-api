@@ -64,10 +64,11 @@ public class PessoaController{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity< DetalhamentoPessoaDto > salvar(@RequestPart(name="pessoa", required=false) PessoaCadastrarDto dto
-    					,@RequestPart(name="foto", required=false) MultipartFile file
-    					){
+    					,@RequestPart(name="foto", required=false) MultipartFile file){
     	
-    	
+    	if(isCpfCadastrado(dto.getCpf())) {
+    		throw new RuntimeException("Pessoa já cadastrada no sistema. Pesquise pelo CPF! ");
+    	}
     	var entidade = new Pessoa(dto);
     	
     	if(file != null)  {
@@ -81,7 +82,18 @@ public class PessoaController{
 				.body(new DetalhamentoPessoaDto(entidade)); 
     }
     
-    @GetMapping("/foto/{pessoaid}")
+    private boolean isCpfCadastrado(String cpf) {
+    	if(cpf != null && !cpf.isEmpty()) {
+    		List<Pessoa> pessoas = repository.findByCpf(cpf);
+    		if(pessoas != null && !pessoas.isEmpty()) {
+    			return true;
+    		}
+    	}
+		
+		return false;
+	}
+
+	@GetMapping("/foto/{pessoaid}")
     @ResponseBody
     public ResponseEntity<?>  buscaFotoByPath(@PathVariable Long pessoaid ) throws IOException{
     	

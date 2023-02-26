@@ -8,6 +8,7 @@ import lombok.Data;
 public class DetalhamentoVisitaDto {
 	private Long id;
 	private String nomePessoa;
+	private String cpfPessoa;
 	private LocalDateTime horarioEntrada;
 	private LocalDateTime horarioSaida;	   
     private String nomeCadastrador;
@@ -20,6 +21,7 @@ public class DetalhamentoVisitaDto {
 		this.horarioEntrada = entidade.getDataEntrada();
 		this.horarioSaida = entidade.getDataSaida();
 		this.ativo = entidade.isAtivo();
+		this.cpfPessoa = entidade.getPessoa().getCpf();
 		//this.nomeCadastrador = pessoa.getUsuarioCadastrador().getNome();
 	}
 
