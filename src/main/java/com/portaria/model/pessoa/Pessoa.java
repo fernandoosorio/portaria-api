@@ -1,6 +1,7 @@
 package com.portaria.model.pessoa;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.swing.text.MaskFormatter;
 
 import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.infra.dominio.Usuario;
 import com.portaria.model.visita.Visita;
 
 import lombok.Data;
@@ -73,6 +77,9 @@ public class Pessoa implements Serializable  {
     
     @Column
     private String caminhoFoto;
+    
+    @Transient
+    private Usuario usuario;
 
     public Pessoa (Long id) {
     	this.id = id;
@@ -105,12 +112,28 @@ public class Pessoa implements Serializable  {
 		if(!ObjectUtils.isEmpty(dto.getTelefoneFixo())) {
 			this.telefoneFixo = dto.getTelefoneFixo();
 		}
+		if(!ObjectUtils.isEmpty(dto.getAtivo())) {
+			this.ativo = dto.getAtivo();
+		}
 		
 		
 		
 		this.dataUltimaAtualizacao = LocalDateTime.now();
 		
 	}
+	
+	public String getCpfFormatado() {
+		  if ( cpf == null) return null;
+		  try {
+		   MaskFormatter mask = new MaskFormatter("###.###.###-##");
+		   mask.setValueContainsLiteralCharacters(false);
+		   return mask.valueToString(cpf);
+		  }
+		  catch (ParseException ex) {
+		   ex.printStackTrace();
+		   return null;
+		  }
+		 }
 
 
 }

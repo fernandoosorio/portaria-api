@@ -93,7 +93,7 @@ public class VisitaController{
     }
 
     @PostMapping("/buscarPorParametrosPaginado")
-    public ResponseEntity< Page<Visita>> buscarComParametros(@RequestBody ParametrosPesquisa parametrosPesquisa){
+    public ResponseEntity< Page<DetalhamentoVisitaDto>> buscarComParametros(@RequestBody ParametrosPesquisa parametrosPesquisa){
         List<Order> orders = new ArrayList<Order>();
         orders.add( new Order(Sort.Direction.DESC, "id") );     
 
@@ -101,11 +101,14 @@ public class VisitaController{
         parametrosPesquisa.getTamanho(),
         Sort.by(orders));
         
-        Page<Visita>  retorno = repository.findByParametros		(
+        var  retorno = repository.findByParametros		(
         		parametrosPesquisa.getNome(), 
+        		parametrosPesquisa.getCpf(), 
         	//	parametrosPesquisa.getDataToTime(),
         		parametrosPesquisa.isAtivo(), 
-        		pageRequest) ;
+        		pageRequest)
+        		.map(DetalhamentoVisitaDto::new )
+        		;
         
        
         return ResponseEntity.ok(retorno);

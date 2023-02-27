@@ -12,7 +12,7 @@ public class PessoaAtualizaraDto {
     private String nome;
     private String telefoneCelular;
     private String telefoneFixo;
-    private boolean ativo;
+    private Boolean ativo ;
     private Long idUsuarioModificador;
 
     

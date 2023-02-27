@@ -10,18 +10,13 @@ import lombok.Data;
 public class ParametrosPesquisa {
 
     private String nome;
-    //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy", timezone="	America/Fortaleza")
     private String data;
-
     private int pagina; 
-    
     private int tamanho;
-
     private String ativoString;
-    
     private String caminho;
-    
     private String cpf;
+    private String matriculaUsuarioLogado;
 
  
     public LocalDateTime getDataToTime() {
