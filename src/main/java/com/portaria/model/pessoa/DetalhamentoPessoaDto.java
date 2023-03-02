@@ -15,6 +15,7 @@ public class DetalhamentoPessoaDto {
     private String caminhoFoto;
     private String telefoneCelular;
     private String telefoneFixo;
+    private byte[] fotoSalva;
 	
 	
 	public DetalhamentoPessoaDto(Pessoa entidade) {
@@ -26,6 +27,7 @@ public class DetalhamentoPessoaDto {
 		setCaminhoFoto (entidade.getCaminhoFoto());
 		setTelefoneCelular (entidade.getTelefoneCelular());
 		setTelefoneFixo ( entidade.getTelefoneFixo() );
+		setFotoSalva(entidade.getFotoSalva());
 		
 		//this.nomeCadastrador = pessoa.getUsuarioCadastrador().getNome();
 	}

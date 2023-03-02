@@ -80,6 +80,9 @@ public class Pessoa implements Serializable  {
     
     @Transient
     private Usuario usuario;
+    
+    @Transient
+    private byte[] fotoSalva;
 
     public Pessoa (Long id) {
     	this.id = id;
@@ -114,6 +117,9 @@ public class Pessoa implements Serializable  {
 		}
 		if(!ObjectUtils.isEmpty(dto.getAtivo())) {
 			this.ativo = dto.getAtivo();
+		}
+		if( !ObjectUtils.isEmpty(dto.getCaminhoFoto()) ) {
+			this.caminhoFoto = dto.getCaminhoFoto();
 		}
 		
 		

@@ -79,7 +79,7 @@ public class PessoaController{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity< DetalhamentoPessoaDto > salvar(@RequestPart(name="pessoa", required=false) PessoaCadastrarDto dto
-    					,@RequestPart(name="foto", required=false) MultipartFile file){
+    					,@RequestPart(name="foto", required=false) MultipartFile file) throws IOException{
     	
     	if(isCpfCadastrado(dto.getCpf())) {
     		throw new RuntimeException("Pessoa já cadastrada no sistema. Pesquise pelo CPF! ");
@@ -92,6 +92,11 @@ public class PessoaController{
     	}
     		
 		repository.save(entidade);
+		
+		//retornar a foto para o front end
+		if(entidade.getCaminhoFoto() != null) {
+    		entidade.setFotoSalva( fileStorageService.downloadImageFromFileSystem( entidade.getCaminhoFoto()   ) );
+    	}
     	
 		return  ResponseEntity.ok()
 				.body(new DetalhamentoPessoaDto(entidade)); 
@@ -125,12 +130,28 @@ public class PessoaController{
 				.body(image);
     }
 
-    @PutMapping
+    @PutMapping(consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Transactional
-    public ResponseEntity<DetalhamentoPessoaDto> atualizar(@RequestBody @Validated PessoaAtualizaraDto atualizarDto){
-    	var entidade = repository.getReferenceById(atualizarDto.getId());
-    	entidade.atualizarDados(atualizarDto);
+    public ResponseEntity<DetalhamentoPessoaDto> atualizar(@RequestPart(name="pessoa", required=false) @Validated PessoaAtualizaraDto dto
+			,@RequestPart(name="foto", required=false) MultipartFile file) throws IOException{
+    	var entidade = repository.getReferenceById(dto.getId());
+    	
+    	
+    	if(file != null)  {
+    		String enderecoFoto = fileStorageService.storeFile(file);
+    		dto.setCaminhoFoto(enderecoFoto);
+    	}
+    		
+    	entidade.atualizarDados(dto);
+		
+		//retornar a foto para o front end
+		if(entidade.getCaminhoFoto() != null) {
+    		entidade.setFotoSalva( fileStorageService.downloadImageFromFileSystem( entidade.getCaminhoFoto()   ) );
+    	}
+    	
+    	
+    	
     	
         return  ResponseEntity.ok()
         						.body(new DetalhamentoPessoaDto(entidade)); 
@@ -138,9 +159,14 @@ public class PessoaController{
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<DetalhamentoPessoaDto>  buscaPorId(@PathVariable("id") Long id ){
+    public ResponseEntity<DetalhamentoPessoaDto>  buscaPorId(@PathVariable("id") Long id ) throws IOException{
     	
     	var entidade = repository.getReferenceById( id);
+    	//retornar a foto para o front end
+    	if(entidade.getCaminhoFoto() != null) {
+    		entidade.setFotoSalva( fileStorageService.downloadImageFromFileSystem( entidade.getCaminhoFoto()   ) );
+    	}
+		 
     	
     	return  ResponseEntity.ok(new DetalhamentoPessoaDto(entidade)); 
     }

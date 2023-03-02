@@ -14,6 +14,8 @@ public class PessoaAtualizaraDto {
     private String telefoneFixo;
     private Boolean ativo ;
     private Long idUsuarioModificador;
+    private String caminhoFoto;
+    private byte[] fotoSalva;
 
     
 }
