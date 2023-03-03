@@ -2,6 +2,7 @@ package com.infra.dominio;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -57,6 +58,17 @@ public class Usuario implements UserDetails {
 	@OneToOne
 	@JoinColumn(name ="setor_id")
 	private Setor setorLotacao;
+	
+	@Column
+	private String sexo;
+	@Column
+	private String email;
+	@Column
+	private Date dataNascimento;
+	@Column
+	private String nomeMae;
+	@Column
+	private Long tipoFuncionarioId;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
