@@ -71,7 +71,7 @@
 			</staticText>
 			<image>
 				<reportElement x="100" y="0" width="80" height="74" uuid="5b8d4c34-92ec-4ebf-9b83-a48d77a483f8"/>
-				<imageExpression><![CDATA[$P{APP_REPORT_PATH}+"relatorios/brasao.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{APP_REPORT_PATH}+"/relatorios/brasao.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

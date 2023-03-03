@@ -13,8 +13,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Data;
@@ -97,6 +100,17 @@ public class Usuario implements UserDetails {
 	
 	public Usuario (Long id) {
 		this.id = id;
+	}
+	
+	public String getUsuarioLogado() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+		    String currentUserName = authentication.getName();
+		    return currentUserName;
+		}
+		return null;
+		
+		
 	}
 	
 

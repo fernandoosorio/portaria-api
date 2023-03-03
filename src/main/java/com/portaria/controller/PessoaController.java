@@ -1,5 +1,6 @@
 package com.portaria.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.infra.dominio.Usuario;
 import com.portaria.model.ParametrosPesquisa;
 import com.portaria.model.pessoa.DetalhamentoPessoaDto;
 import com.portaria.model.pessoa.FileStorageService;
@@ -46,6 +48,10 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 @RestController
 @RequestMapping("/pessoa")
@@ -197,23 +203,48 @@ public class PessoaController{
     public ResponseEntity<byte[]> criarRelatorio(@RequestBody ParametrosPesquisa parametrosPesquisa) throws FileNotFoundException, JRException, SQLException{
     	Map<String,Object> parametros = new HashMap<>();
     	byte[] bytes = null;
-    	parametros.put("APP_REPORT_PATH",ResourceUtils.CLASSPATH_URL_PREFIX );
-    	parametros.put("INT_MATRICULA_LOGADO_ID",parametrosPesquisa.getMatriculaUsuarioLogado()); 
+    	parametros.put("APP_REPORT_PATH",ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX ).getAbsolutePath() 
+    			);
+    	parametros.put("INT_MATRICULA_LOGADO_ID", new Usuario().getUsuarioLogado()); 
     	parametros.put("APP_TITULO_RELATORIO", "Relatório de pessoas cadastradas");
     	String relatorioJasper = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + 
     			"relatorios/portaria_pessoas_geral.jasper").getAbsolutePath();
     	JRBeanCollectionDataSource resultadoDaConsulta = new JRBeanCollectionDataSource( relatorioDao.relatorioPessoa(parametrosPesquisa) );
-    	
+  
     	JasperPrint jasperPrint = JasperFillManager.fillReport(relatorioJasper, parametros, resultadoDaConsulta);
-    	bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+    	if("pdf".equals(parametrosPesquisa.getFormatoRelatorio())) {
+    		bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+        	return ResponseEntity
+        		      .ok()
+        		      .header("Content-Type", "application/pdf; charset=UTF-8")
+        		      .header("Content-Disposition", "inline;")
+        		      .body(bytes);
+    	}else {
+    		 var input = new SimpleExporterInput(jasperPrint);
+    		 var byteArray = new ByteArrayOutputStream();
+    		 var output = new SimpleOutputStreamExporterOutput(byteArray);
+    		 var exporter = new JRXlsxExporter();
+            
+    		SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+    		configuration.setSheetNames(new String[] { "plan1" });
+            configuration.setOnePagePerSheet(false);
+            configuration.setDetectCellType(true);
+            configuration.setRemoveEmptySpaceBetweenRows(true);
+            configuration.setWhitePageBackground(false);
+            exporter.setConfiguration(configuration);
+            
+            exporter.setExporterInput(input);
+            exporter.setExporterOutput(output);
+            exporter.exportReport(); 
+            bytes = byteArray.toByteArray();
+            output.close();
+        	return ResponseEntity
+        		      .ok()
+        		      .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8")
+        		      .header("Content-Disposition", "inline;" )
+        		      .body(bytes);
+    	}
     	
-    	return ResponseEntity
-    		      .ok()
-    		      // Specify content type as PDF
-    		      .header("Content-Type", "application/pdf; charset=UTF-8")
-    		      // Tell browser to display PDF if it can
-    		      .header("Content-Disposition", "inline; filename=pessoas_em_\"" +new Date().getTime()+ ".pdf\"")
-    		      .body(bytes);
     	
     }
     

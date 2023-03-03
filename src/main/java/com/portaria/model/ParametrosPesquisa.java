@@ -17,6 +17,7 @@ public class ParametrosPesquisa {
     private String caminho;
     private String cpf;
     private String matriculaUsuarioLogado;
+    private String formatoRelatorio;
 
  
     public LocalDateTime getDataToTime() {
