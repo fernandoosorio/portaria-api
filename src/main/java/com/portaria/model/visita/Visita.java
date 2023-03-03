@@ -68,7 +68,7 @@ public class Visita  implements Serializable{
     public Visita(VisitaCadastrarDto dto) {
     	this.destino = dto.getDestino();
     	this.pessoa = new Pessoa(dto.getPessoaId());
-    	this.idUsuarioCadastrador = dto.getIdUsuarioCadastrador();
+    	this.idUsuarioCadastrador = dto.getIdUsuario();
     	if(dto.getHoraEntrada() != null) {
     		this.dataEntrada = LocalDateTime.parse(dto.getHoraEntrada(), 
         			DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
@@ -87,8 +87,8 @@ public class Visita  implements Serializable{
 			this.destino = dto.getDestino();
 		}
 		
-		if(!ObjectUtils.isEmpty(dto.getIdUsuarioModificador())) {
-			this.idUsuarioUltimaAtualizacao = dto.getIdUsuarioModificador() ;
+		if(!ObjectUtils.isEmpty(dto.getIdUsuario())) {
+			this.idUsuarioUltimaAtualizacao = dto.getIdUsuario() ;
 		}
 		if(dto.isRegistrandoSaida() ) {
 			if(dto.getHorarioSaidaRegistrar() != null ) {

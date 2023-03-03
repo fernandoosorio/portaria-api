@@ -12,10 +12,8 @@ public class VisitaCadastrarDto {
 	
     private boolean ativo = true;
    
-    private Long idUsuarioCadastrador;
-    
-    private Long idUsuarioUltimaAtualizacao;
-    
+    private Long idUsuario;
+        
     private String horaEntrada;
     
     private String horaSaida;

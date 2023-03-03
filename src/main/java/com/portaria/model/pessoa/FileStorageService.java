@@ -20,7 +20,6 @@ public class FileStorageService {
 
 	private final Path fileStorageLocation;
 
-	@Autowired
 	public FileStorageService(FileStorageProperties fileStorageProperties) {
 		this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
@@ -39,7 +38,7 @@ public class FileStorageService {
 		try {
 			// Check if the file's name contains valid  characters or not
 			if (fileName.contains("..")) {
-				throw new RuntimeException("Sorry! File name which contains invalid path sequence " + fileName);
+				throw new RuntimeException("Desculpa! O nome do arquivo possui caracteres especiais. Remova-os. Nome =  " + fileName);
 			}
 			// Copy file to the target place (Replacing existing file with the same name)
 			Path targetLocation = this.fileStorageLocation.resolve(fileName);

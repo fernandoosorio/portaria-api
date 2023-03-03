@@ -11,7 +11,7 @@ public class VisitaAtualizaraDto {
 
     private String destino;
     private boolean ativo;
-    private Long idUsuarioModificador;
+    private Long idUsuario;
     private String horarioSaidaRegistrar;
     private boolean registrandoSaida;
 

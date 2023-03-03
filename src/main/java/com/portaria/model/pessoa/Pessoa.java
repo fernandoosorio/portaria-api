@@ -93,7 +93,7 @@ public class Pessoa implements Serializable  {
     	this.cpf = dto.getCpf();
     	this.telefoneCelular = dto.getTelefoneCelular();
     	this.dataCriacao = LocalDateTime.now();
-    	this.idUsuarioCadastrador = dto.getIdUsuarioCadastrador();
+    	this.idUsuarioCadastrador = dto.getIdUsuario();
     	this.ativo = dto.isAtivo();
     	this.caminhoFoto =  dto.getCaminhoFoto();
     	this.telefoneFixo = dto.getTelefoneFixo();
@@ -108,8 +108,8 @@ public class Pessoa implements Serializable  {
 		if(!ObjectUtils.isEmpty(dto.getTelefoneCelular())) {
 			this.telefoneCelular = dto.getTelefoneCelular();
 		}
-		if(!ObjectUtils.isEmpty(dto.getIdUsuarioModificador())) {
-			this.idUsuarioUltimaAtualizacao = dto.getIdUsuarioModificador() ;
+		if(!ObjectUtils.isEmpty(dto.getIdUsuario())) {
+			this.idUsuarioUltimaAtualizacao = dto.getIdUsuario() ;
 		}
 		
 		if(!ObjectUtils.isEmpty(dto.getTelefoneFixo())) {

@@ -13,7 +13,7 @@ public class PessoaCadastrarDto {
     private String cpf;
     private String telefoneCelular;
     private boolean ativo = true;
-    private Long idUsuarioCadastrador;
+    private Long idUsuario;
     private String caminhoFoto;
     private String telefoneFixo;
     

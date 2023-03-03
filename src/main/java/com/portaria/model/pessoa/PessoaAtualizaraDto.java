@@ -13,7 +13,7 @@ public class PessoaAtualizaraDto {
     private String telefoneCelular;
     private String telefoneFixo;
     private Boolean ativo ;
-    private Long idUsuarioModificador;
+    private Long idUsuario;
     private String caminhoFoto;
     private byte[] fotoSalva;
 
