@@ -1,5 +1,8 @@
 package com.infra.controller;
 
+import java.text.ParseException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infra.dominio.Usuario;
 import com.infra.dominio.UsuarioDto;
 import com.infra.dominio.dto.DadosLoginDto;
+import com.infra.dominio.dto.DadosRecuperarSenhaDto;
+import com.infra.repositorio.UsuarioRepository;
 import com.infra.seguranca.TokenService;
 
 import lombok.var;
@@ -27,6 +32,9 @@ public class AutenticacaoController {
 	@Autowired
 	private TokenService tokenService;
 	
+	@Autowired
+	private UsuarioRepository repositorio;
+	
 	@PostMapping
 	public ResponseEntity<UsuarioDto> efetuarLogin(@RequestBody @Validated DadosLoginDto dados) {
 		
@@ -40,6 +48,23 @@ public class AutenticacaoController {
 	
 		
 		return ResponseEntity.ok( usuarioDto);
+		
+	}
+	
+	@PostMapping("/recuperar-senha")
+	public ResponseEntity recuperarSenha(@RequestBody @Validated DadosRecuperarSenhaDto dto) throws ParseException {
+		
+		List<Usuario> usuarios = repositorio.findByCpfAndNomeAndEmailAndDataNascimento(dto.getCpf(),
+				dto.getNome(), 
+				dto.getEmail(), 
+				dto.getDataNacimentoAsDate());
+		if(usuarios != null ) {
+			
+		}else {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return null;
 		
 	}
 

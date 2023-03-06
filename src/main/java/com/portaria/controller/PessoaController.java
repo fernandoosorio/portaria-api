@@ -205,7 +205,7 @@ public class PessoaController{
     	byte[] bytes = null;
     	parametros.put("APP_REPORT_PATH",ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX ).getAbsolutePath() 
     			);
-    	parametros.put("INT_MATRICULA_LOGADO_ID", new Usuario().getUsuarioLogado()); 
+    	parametros.put("USUARIO_LOGADO", new Usuario().getUsuarioLogado()); 
     	parametros.put("APP_TITULO_RELATORIO", "Relatório de pessoas cadastradas");
     	String relatorioJasper = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + 
     			"relatorios/portaria_pessoas_geral.jasper").getAbsolutePath();
