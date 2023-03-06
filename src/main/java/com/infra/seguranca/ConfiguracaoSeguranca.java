@@ -31,8 +31,8 @@ public class ConfiguracaoSeguranca {
 				.cors().and().csrf().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().authorizeHttpRequests()
-				.antMatchers(HttpMethod.POST, "/portaria-api/login").permitAll()
-				.antMatchers(HttpMethod.POST, "/portaria-api/login/recuperar-senha").permitAll()
+				.antMatchers(HttpMethod.POST, "/portaria-api/login/**", "/login/**").permitAll()
+				
 				.anyRequest().authenticated()
 				.and().addFilterBefore(segurancaFilter, UsernamePasswordAuthenticationFilter.class);
 				

@@ -1,11 +1,10 @@
 package com.infra.dominio.dto;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -17,11 +16,14 @@ public class DadosRecuperarSenhaDto {
 	@NotBlank private String email;
 	@NotBlank private String senha;
 	
-	public Date getDataNacimentoAsDate() throws ParseException {
-		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy"); 
-		Date dataFormatada = formato.parse(this.dataNascimento);
+	public LocalDate getDataNacimentoAsDate() throws ParseException {
+//		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy"); 
+//		Date dataFormatada = formato.parse(this.dataNascimento);
+		LocalDate dataFormatada =  LocalDate.parse(dataNascimento, 
+    			DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		
 		return dataFormatada;
 	}
+	
 
 }

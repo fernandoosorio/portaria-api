@@ -1,8 +1,8 @@
 package com.infra.dominio;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -69,7 +69,7 @@ public class Usuario implements UserDetails {
 	@Column
 	private String email;
 	@Column
-	private Date dataNascimento;
+	private LocalDate dataNascimento;
 	@Column
 	private String nomeMae;
 	@Column

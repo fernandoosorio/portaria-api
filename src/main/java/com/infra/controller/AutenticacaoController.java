@@ -54,11 +54,13 @@ public class AutenticacaoController {
 	@PostMapping("/recuperar-senha")
 	public ResponseEntity recuperarSenha(@RequestBody @Validated DadosRecuperarSenhaDto dto) throws ParseException {
 		
-		List<Usuario> usuarios = repositorio.findByCpfAndNomeAndEmailAndDataNascimento(dto.getCpf(),
+		//Todas as informações obrigatórias foram preenchidas
+		List<Usuario> usuarios = repositorio.findByCpfAndNomeIgnoreCaseAndEmailIgnoreCaseAndDataNascimento(
+				dto.getCpf(),
 				dto.getNome(), 
 				dto.getEmail(), 
 				dto.getDataNacimentoAsDate());
-		if(usuarios != null ) {
+		if(usuarios != null && usuarios.size() > 0 ) {
 			
 		}else {
 			return ResponseEntity.notFound().build();
