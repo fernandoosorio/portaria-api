@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.infra.converter.LocalDateTimeConverter;
 import com.infra.dominio.Usuario;
+import com.infra.utils.DatasUtil;
 import com.portaria.model.ParametrosPesquisa;
 import com.portaria.model.pessoa.Pessoa;
 import com.portaria.model.visita.Visita;
@@ -73,7 +74,26 @@ public class relatorioDao {
 		String sql = "select p.nome, v.data_entrada , v.data_saida, v.id, u.nome as unome, u.id as uid "
 				+ "from portaria.visita v "
 				+ "join portaria.pessoa p  on v.pessoaid = p.id  "
-				+ "join public.usuario u on u.id = v.id_usuario_cadastrador ";
+				+ "join public.usuario u on u.id = v.id_usuario_cadastrador "
+				+" where 1 = 1 ";
+		if(parametrosPesquisa.getDataInicioPesquisa() != null && !parametrosPesquisa.getDataInicioPesquisa().isEmpty()) {
+			sql = sql.concat(" AND v.data_entrada > '"+ DatasUtil.getStringToLocalDateTimeInicioDoDia(
+					parametrosPesquisa.getDataInicioPesquisa() )  + "'" );
+		}
+		if(parametrosPesquisa.getDataFimPesquisa() != null && !parametrosPesquisa.getDataFimPesquisa().isEmpty()) {
+			sql = sql.concat(" AND v.data_saida < '"+ DatasUtil.getStringToLocalDateTimeFimDoDia(
+					parametrosPesquisa.getDataFimPesquisa() ) +"'" );
+		}
+		
+		if(parametrosPesquisa.getCpf() != null && !parametrosPesquisa.getCpf().isEmpty()) {
+			sql = sql.concat(" AND p.cpf ilike '"+parametrosPesquisa.getCpf() +"'" );
+		}
+		
+		if(parametrosPesquisa.getNome() != null && !parametrosPesquisa.getNome().isEmpty()) {
+			sql = sql.concat(" AND upper(p.nome) ilike '"+parametrosPesquisa.getNome().toUpperCase() +"'" );
+		}
+		
+		
 		
 		PreparedStatement st = con.prepareStatement(sql);
 		

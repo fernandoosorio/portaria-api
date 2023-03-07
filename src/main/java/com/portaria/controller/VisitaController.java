@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,41 +145,48 @@ public class VisitaController{
     	parametros.put("APP_TITULO_RELATORIO", "Relatório de visitas");
     	String relatorioJasper = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + 
     			"relatorios/portaria_visitas.jasper").getAbsolutePath();
-    	JRBeanCollectionDataSource resultadoDaConsulta = new JRBeanCollectionDataSource( relatorioDao.relatorioVisitas(parametrosPesquisa) );
-  
-    	JasperPrint jasperPrint = JasperFillManager.fillReport(relatorioJasper, parametros, resultadoDaConsulta);
-    	if("pdf".equals(parametrosPesquisa.getFormatoRelatorio())) {
-    		bytes = JasperExportManager.exportReportToPdf(jasperPrint);
-        	return ResponseEntity
-        		      .ok()
-        		      .header("Content-Type", "application/pdf; charset=UTF-8")
-        		      .header("Content-Disposition", "inline;")
-        		      .body(bytes);
+    	Collection<Visita> visitas = relatorioDao.relatorioVisitas(parametrosPesquisa);
+    	if( visitas != null && visitas.size() > 0) {
+    		JRBeanCollectionDataSource resultadoDaConsulta = new JRBeanCollectionDataSource(visitas);
+    		  
+        	JasperPrint jasperPrint = JasperFillManager.fillReport(relatorioJasper, parametros, resultadoDaConsulta);
+        	if("pdf".equals(parametrosPesquisa.getFormatoRelatorio())) {
+        		bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+            	return ResponseEntity
+            		      .ok()
+            		      .header("Content-Type", "application/pdf; charset=UTF-8")
+            		      .header("Content-Disposition", "inline;")
+            		      .body(bytes);
+        	}else {
+        		 var input = new SimpleExporterInput(jasperPrint);
+        		 var byteArray = new ByteArrayOutputStream();
+        		 var output = new SimpleOutputStreamExporterOutput(byteArray);
+        		 var exporter = new JRXlsxExporter();
+                
+        		SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+        		configuration.setSheetNames(new String[] { "plan1" });
+                configuration.setOnePagePerSheet(false);
+                configuration.setDetectCellType(true);
+                configuration.setRemoveEmptySpaceBetweenRows(true);
+                configuration.setWhitePageBackground(false);
+                exporter.setConfiguration(configuration);
+                
+                exporter.setExporterInput(input);
+                exporter.setExporterOutput(output);
+                exporter.exportReport(); 
+                bytes = byteArray.toByteArray();
+                output.close();
+            	return ResponseEntity
+            		      .ok()
+            		      .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8")
+            		      .header("Content-Disposition", "inline;" )
+            		      .body(bytes);
+        	}
     	}else {
-    		 var input = new SimpleExporterInput(jasperPrint);
-    		 var byteArray = new ByteArrayOutputStream();
-    		 var output = new SimpleOutputStreamExporterOutput(byteArray);
-    		 var exporter = new JRXlsxExporter();
-            
-    		SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-    		configuration.setSheetNames(new String[] { "plan1" });
-            configuration.setOnePagePerSheet(false);
-            configuration.setDetectCellType(true);
-            configuration.setRemoveEmptySpaceBetweenRows(true);
-            configuration.setWhitePageBackground(false);
-            exporter.setConfiguration(configuration);
-            
-            exporter.setExporterInput(input);
-            exporter.setExporterOutput(output);
-            exporter.exportReport(); 
-            bytes = byteArray.toByteArray();
-            output.close();
-        	return ResponseEntity
-        		      .ok()
-        		      .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8")
-        		      .header("Content-Disposition", "inline;" )
-        		      .body(bytes);
+    		return ResponseEntity
+      		      .notFound().build();
     	}
+    	
     	
     	
     }

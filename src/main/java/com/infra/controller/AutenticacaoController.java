@@ -1,12 +1,17 @@
 package com.infra.controller;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.text.ParseException;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +24,8 @@ import com.infra.dominio.dto.DadosLoginDto;
 import com.infra.dominio.dto.DadosRecuperarSenhaDto;
 import com.infra.repositorio.UsuarioRepository;
 import com.infra.seguranca.TokenService;
+import com.infra.utils.CpfUtil;
+import com.infra.utils.DatasUtil;
 
 import lombok.var;
 
@@ -34,6 +41,11 @@ public class AutenticacaoController {
 	
 	@Autowired
 	private UsuarioRepository repositorio;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	
 	
 	@PostMapping
 	public ResponseEntity<UsuarioDto> efetuarLogin(@RequestBody @Validated DadosLoginDto dados) {
@@ -52,21 +64,22 @@ public class AutenticacaoController {
 	}
 	
 	@PostMapping("/recuperar-senha")
-	public ResponseEntity recuperarSenha(@RequestBody @Validated DadosRecuperarSenhaDto dto) throws ParseException {
+	@Transactional
+	public ResponseEntity<?> recuperarSenha(@RequestBody @Validated DadosRecuperarSenhaDto dto) throws ParseException {
 		
 		//Todas as informações obrigatórias foram preenchidas
 		List<Usuario> usuarios = repositorio.findByCpfAndNomeIgnoreCaseAndEmailIgnoreCaseAndDataNascimento(
-				dto.getCpf(),
+			   CpfUtil.getCpfSomenteNumeros(dto.getCpf()),
 				dto.getNome(), 
 				dto.getEmail(), 
-				dto.getDataNacimentoAsDate());
+				DatasUtil.getStringDataToLocalDate(dto.getDataNascimento() ) );
 		if(usuarios != null && usuarios.size() > 0 ) {
+			usuarios.get(0).setSenha(passwordEncoder.encode(dto.getSenha()));
+			return ResponseEntity.ok().build();
 			
 		}else {
 			return ResponseEntity.notFound().build();
 		}
-		
-		return null;
 		
 	}
 

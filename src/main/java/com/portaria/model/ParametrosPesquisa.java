@@ -1,9 +1,5 @@
 package com.portaria.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import lombok.Data;
 
 @Data
@@ -18,21 +14,10 @@ public class ParametrosPesquisa {
     private String cpf;
     private String matriculaUsuarioLogado;
     private String formatoRelatorio;
-
- 
-    public LocalDateTime getDataToTime() {
-    	 DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    	 if(data != null && !data.isEmpty()) {
-    		 LocalDate ld = LocalDate.parse(data, df);
-    		 return LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
-    	 }
-    	 
-    	
-    	
-    	return  null;
-    }
-
-  
+    private String dataInicioPesquisa;
+    private String dataFimPesquisa;
+    
+    
     public Boolean isAtivo() {
         if(this.ativoString != null) {
             switch(this.ativoString){
