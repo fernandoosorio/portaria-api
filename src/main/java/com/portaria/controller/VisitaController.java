@@ -190,5 +190,17 @@ public class VisitaController{
     	
     	
     }
+    @GetMapping("/iscartaoemuso/{idCartao}")
+    @ResponseBody
+    public ResponseEntity<Boolean>  isCartaoVisitaEmUso(@PathVariable("idCartao") String cartao ){
+    	
+    	var entidades = repository.findByCodigoVisitaAndDataSaidaIsNull(cartao);
+    	if(entidades != null && entidades.size() > 0) {
+    		return  ResponseEntity.ok(Boolean.TRUE); 
+    	}
+    	return  ResponseEntity.ok(Boolean.FALSE); 
+    }
+    
+    
 
 }

@@ -74,6 +74,8 @@ public class Usuario implements UserDetails {
 	private String nomeMae;
 	@Column
 	private Long tipoFuncionarioId;
+	@Column
+	private boolean ativo;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -107,7 +109,7 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return ativo;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.portaria.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,5 +29,7 @@ public interface VisitaRepository  extends JpaRepository<Visita, Long>{
           //  @Param("data") LocalDateTime data, 
             @Param("ativo") Boolean ativo,
             Pageable pageable);
+    
+    List<Visita>  findByCodigoVisitaAndDataSaidaIsNull(String codigoVisita);
     
 }
