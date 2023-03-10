@@ -2,8 +2,6 @@ package com.portaria.model.pessoa;
 
 import javax.validation.constraints.NotBlank;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.Data;
 
 @Data

@@ -13,6 +13,7 @@ public class DetalhamentoVisitaDto {
 	private LocalDateTime horarioSaida;	   
     private String nomeCadastrador;
     private boolean ativo;
+    private String codigoVisita;
 	
 	
 	public DetalhamentoVisitaDto(Visita entidade) {
@@ -22,6 +23,7 @@ public class DetalhamentoVisitaDto {
 		this.horarioSaida = entidade.getDataSaida();
 		this.ativo = entidade.isAtivo();
 		this.cpfPessoa = entidade.getPessoa().getCpf();
+		this.codigoVisita = entidade.getCodigoVisita();
 		//this.nomeCadastrador = pessoa.getUsuarioCadastrador().getNome();
 	}
 

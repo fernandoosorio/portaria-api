@@ -65,6 +65,9 @@ public class Visita  implements Serializable{
     @Column
     private boolean ativo;
     
+    @Column
+    private String codigoVisita;
+    
     @Transient
     private Usuario usuario;
     
@@ -80,9 +83,11 @@ public class Visita  implements Serializable{
     	}else {
     		this.dataEntrada = LocalDateTime.now();
     	}
-    	
-    			
     	this.ativo = dto.isAtivo();
+    	if(codigoVisita == null || codigoVisita.isEmpty()) {
+    		this.codigoVisita = String.valueOf(LocalDateTime.now().hashCode());
+    	}
+    	
 		
 	}
 
@@ -103,16 +108,9 @@ public class Visita  implements Serializable{
 	    		this.dataSaida = LocalDateTime.now();
 	    	}
 		}
-		
-		
 		this.dataUltimaAtualizacao = LocalDateTime.now();
 
 		
 	}
 
-
-    
-   
-
-    
 }

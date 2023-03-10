@@ -1,5 +1,7 @@
 package com.infra.exception;
 
+import java.io.FileNotFoundException;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -71,9 +73,15 @@ public class GlobalExceptionHandler{
         );
     }
     
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ExceptionDto> FileNotFoundException(FileNotFoundException e){
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        		.body( new ExceptionDto(HttpStatus.FORBIDDEN, e.getMessage())
+        );
+    }
     
-	
-    
+  
 	
 
 }

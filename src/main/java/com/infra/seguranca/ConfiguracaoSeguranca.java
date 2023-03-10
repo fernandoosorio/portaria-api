@@ -14,8 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.infra.exception.ExceptionHandlerFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +26,8 @@ public class ConfiguracaoSeguranca {
 	
 	@Autowired
 	private SegurancaFilter segurancaFilter;
+	@Autowired
+	private ExceptionHandlerFilter exceptionHandlerFilter; 
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,9 +37,11 @@ public class ConfiguracaoSeguranca {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().authorizeHttpRequests()
 				.antMatchers(HttpMethod.POST, "/portaria-api/login/**", "/login/**").permitAll()
-				
 				.anyRequest().authenticated()
-				.and().addFilterBefore(segurancaFilter, UsernamePasswordAuthenticationFilter.class);
+				.and()
+				 .addFilterBefore(exceptionHandlerFilter, CorsFilter.class)
+				 .addFilterBefore(segurancaFilter, UsernamePasswordAuthenticationFilter.class)
+				;
 				
 		 return http.build();
 		

@@ -17,6 +17,7 @@ public class UsuarioDto {
 	private List<Papel> papeis = new ArrayList<>();
 	private Long idSetorLotacao;
 	private String setorLotacao;
+	private String sexo;
 		
 	@Override
 	public String toString() {
@@ -35,6 +36,7 @@ public class UsuarioDto {
 			this.idSetorLotacao = principal.getSetorLotacao().getId();
 			this.setorLotacao = principal.getSetorLotacao().getSetor();
 		}
+		this.sexo  = principal.getSexo();
 		
 	}
 
@@ -42,7 +44,7 @@ public class UsuarioDto {
 	private Collection<? extends Papel> getPapeisNoSistema(List<Papel> papeis2) {
 		List<Papel> retorno = new ArrayList<>();
 		for(Papel p : papeis2) {
-			if(p.getSistema().getSistema().toLowerCase().equals( ("ETICKET").toLowerCase() )) {
+			if(p.getSistema().getSistema().toLowerCase().equals( ("PORTARIA").toLowerCase() )) {
 				Papel papel = new Papel();
 				papel.setId(p.getId());
 				papel.setPapel(p.getPapel());
